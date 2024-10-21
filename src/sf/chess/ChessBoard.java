@@ -41,7 +41,7 @@ public abstract class ChessBoard {
     }
     
     public boolean moveToPosition(int bgnRow, int bgnCol, int endRow, int endCol) {
-	if (checkPos(bgnRow) && checkPos(bgnCol)) {
+	if (checkPos(bgnRow) && checkPos(bgnCol) && checkPos(endRow) && checkPos(endCol)) {
 	    
 	    ChessPiece bgnPiece = board[bgnRow][bgnCol];
 	    ChessPiece endPiece = board[endRow][endCol];
@@ -64,4 +64,8 @@ public abstract class ChessBoard {
     }
     
     public abstract void printBoard();
+
+    public boolean isCellFree(int row, int col) {
+	return (board[row][col] == null);
+    }
 }
