@@ -1,8 +1,12 @@
+import sf.chess.ConsoleChessBoard;
 
 public class Main {
 
     public static void main(String[] args) {
-	System.out.println("Hello");
+	ConsoleChessBoard board = new ConsoleChessBoard("White");
+	board.setPlayerName("White", "Ivan");
+	board.setPlayerName("Black", "Jim");
+	board.printBoard();
     }
 
 }
