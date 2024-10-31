@@ -10,19 +10,31 @@ public class Horse extends ChessPiece {
 
 	@Override
 	public boolean canMoveToPosition(ChessBoard chessBoard, int row, int col, int toRow, int toCol) {
-		
-		for (int rowIndex = row - 2; rowIndex <= row + 2; rowIndex++) {
-			if (rowIndex == 0)
-				continue;
-			for (int colIndex = col - 2; colIndex <= col + 2; colIndex++) {
-				if (colIndex == 0)
-					continue;
-				if ( (rowIndex == toRow) && (colIndex == toCol))
-					return true;
-			}
-		}
+	    final Position[] posiblePos = {
+		new Position(row - 2, col - 1),
+		new Position(row - 2, col + 1),
+		new Position(row - 1, col - 2),
+		new Position(row - 1, col + 2),
+		new Position(row + 2, col - 1),
+		new Position(row + 2, col + 1),
+		new Position(row + 1, col - 2),
+		new Position(row + 1, col + 2)
+	    };
+	    	moves.clear();
+	    	
+	    	for (var p : posiblePos) {
+	    	    if (chessBoard.checkPos(p)) {
+	    		if (!chessBoard.isCellFree(p)) {
+	    		    if (color.equals(chessBoard.getCellColor(p))) {
+	    			continue;
+	    		    }
+	    		}
+	    		
+	    		moves.add(new PossibleMove(p));
+	    	    }
+	    	}
 
-		return false;
+		return checkMoveList(toRow, toCol);
 	}
 
 	@Override

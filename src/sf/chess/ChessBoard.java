@@ -18,6 +18,8 @@ public abstract class ChessBoard {
 	public ChessBoard(String nowPlayer) {
 		this.nowPlayer = nowPlayer;
 		board[0][1] = new Horse("White");
+		
+		board[7][1] = new Horse("Black");
 	}
 
 	public String nowPlayerColor() {
@@ -53,15 +55,12 @@ public abstract class ChessBoard {
 	public boolean moveToPosition(int bgnRow, int bgnCol, int endRow, int endCol) {
 		if (checkPos(bgnRow, bgnCol) && checkPos(endCol, endCol)) {
 
-			ChessPiece bgnPiece = board[bgnRow][bgnCol];
-			ChessPiece endPiece = board[endRow][endCol];
-
-			if (!nowPlayer.equals(bgnPiece.getColor()))
+			if (board[bgnRow][bgnCol] == null || !nowPlayer.equals(board[bgnRow][bgnCol].getColor()))
 				return false;
 
-			if (bgnPiece.canMoveToPosition(this, bgnRow, bgnCol, endRow, endCol)) {
-				bgnPiece = endPiece;
-				endPiece = null;
+			if (board[bgnRow][bgnCol].canMoveToPosition(this, bgnRow, bgnCol, endRow, endCol)) {
+			    	board[endRow][endCol] = board[bgnRow][bgnCol];
+			    	board[bgnRow][bgnCol] = null;
 				nowPlayer = nowPlayer.equals("White") ? "Black" : "White";
 				return true;
 			}
@@ -72,6 +71,11 @@ public abstract class ChessBoard {
 	public boolean checkPos(int row, int col) {
 		return (row >= MIN_ROW_INDEX && row <= MAX_ROW_INDEX && col >= MIN_COL_INDEX && col <= MAX_COL_INDEX);
 	}
+	
+	public boolean checkPos(Position p) {
+		return checkPos(p.row, p.col);
+	}
+
 
 	public abstract void printBoard();
 	
@@ -79,5 +83,13 @@ public abstract class ChessBoard {
 
 	public boolean isCellFree(int row, int col) {
 		return (board[row][col] == null);
+	}
+	
+	public boolean isCellFree(Position p) {
+	    return isCellFree(p.row, p.col);
+	}
+	
+	public String getCellColor(Position p) {
+	    return board[p.row][p.col].color;
 	}
 }

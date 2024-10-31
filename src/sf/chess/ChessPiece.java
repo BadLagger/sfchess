@@ -7,16 +7,23 @@ public abstract class ChessPiece {
 	boolean check = true;
 
 	protected class PossibleMove {
-		public int row;
-		public int col;
+	        Position pos;
 
 		public PossibleMove(int row, int col) {
-			this.row = row;
-			this.col = col;
+			pos.row = row;
+			pos.col = col;
+		}
+		
+		public PossibleMove(Position p) {
+		    pos = p;
 		}
 
 		public boolean equal(int row, int col) {
-			return ((this.row == row) && (this.col == col));
+			return ((pos.row == row) && (pos.col == col));
+		}
+		
+		public boolean equal(Position p) {
+			return equal(p.row, p.col);
 		}
 	}
 	

@@ -64,13 +64,11 @@ public class ConsoleChessBoard extends ChessBoard {
 		} else {
 			
 			String[] cellCoordsStr = inputStr.split("-");
-			int bgnRow = -1, bgnCol = -1;
-			int endRow = -1, endCol = -1;
 			
-			getNumsFromStr(cellCoordsStr[0], bgnRow, bgnCol);
-			getNumsFromStr(cellCoordsStr[1], endRow, endCol);
+			Position bgn = getNumsFromStr(cellCoordsStr[0]);
+			Position end = getNumsFromStr(cellCoordsStr[1]);
 			
-			if (moveToPosition(bgnRow, bgnCol, endRow, endCol)) {
+			if (moveToPosition(bgn.row, bgn.col, end.row, end.col)) {
 				skipBoardPrint = false;
 				System.out.println("Good move!");
 			} else {
@@ -86,23 +84,25 @@ public class ConsoleChessBoard extends ChessBoard {
 		return skipBoardPrint;
 	}
 	
-	private void getNumsFromStr(String cellCoordsStr, int outRow, int outCol) {
+	private Position getNumsFromStr(String cellCoordsStr) {
+	    	Position retPos = new Position();
 		final char strCol[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 		final char strRow[] = {'1', '2', '3', '4', '5', '6', '7', '8'};
 		
 		for (int i = 0; i < strCol.length; i++) {
 			if (strCol[i] == cellCoordsStr.charAt(0)) {
-				outCol = i;
+			        retPos.col = i;
 				break;
 			}
 		}
 		
 		for (int i = 0; i < strRow.length; i++) {
 			if (strRow[i] == cellCoordsStr.charAt(1)) {
-				outRow = i;
+			    	retPos.row = i;
 				break;
 			}
 		}
+		return retPos;
 	}
 	
 	private boolean checkInput(String txt) {
