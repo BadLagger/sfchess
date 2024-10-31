@@ -7,9 +7,10 @@ public class Main {
 		board.setPlayerName("White", "Ivan");
 		board.setPlayerName("Black", "Jim");
 		
-		do
-			board.printBoard();
-		while(board.inputToBoard());
+		do {
+			if (!board.getSkipPrintBoard())
+				board.printBoard();
+		} while(board.inputToBoard());
 		
 		System.out.println("Game Over");
 	}
