@@ -17,9 +17,15 @@ public abstract class ChessBoard {
 
 	public ChessBoard(String nowPlayer) {
 		this.nowPlayer = nowPlayer;
-		board[0][1] = new Horse("White");
+		board[0][2] = new Horse("White");
+		board[0][5] = new Horse("White");
+		for (int i = 0; i <= MAX_INDEX; ++i)
+			board[1][i] = new Pawn("White");
 		
-		board[7][1] = new Horse("Black");
+		board[7][2] = new Horse("Black");
+		board[7][5] = new Horse("Black");
+		for (int i = 0; i <= MAX_INDEX; ++i)
+			board[6][i] = new Pawn("Black");
 	}
 
 	public String nowPlayerColor() {
@@ -91,5 +97,9 @@ public abstract class ChessBoard {
 	
 	public String getCellColor(Position p) {
 	    return board[p.row][p.col].color;
+	}
+	
+	public String getCellColor(int row, int col) {
+	    return getCellColor(new Position(row, col));
 	}
 }

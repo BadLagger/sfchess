@@ -1,7 +1,5 @@
 package sf.chess;
 
-//import java.util.ArrayList;
-
 public class Horse extends ChessPiece {
 
 	public Horse(String color) {
@@ -10,29 +8,28 @@ public class Horse extends ChessPiece {
 
 	@Override
 	public boolean canMoveToPosition(ChessBoard chessBoard, int row, int col, int toRow, int toCol) {
-	    final Position[] posiblePos = {
-		new Position(row - 2, col - 1),
-		new Position(row - 2, col + 1),
-		new Position(row - 1, col - 2),
-		new Position(row - 1, col + 2),
-		new Position(row + 2, col - 1),
-		new Position(row + 2, col + 1),
-		new Position(row + 1, col - 2),
-		new Position(row + 1, col + 2)
-	    };
-	    	moves.clear();
-	    	
-	    	for (var p : posiblePos) {
-	    	    if (chessBoard.checkPos(p)) {
-	    		if (!chessBoard.isCellFree(p)) {
-	    		    if (color.equals(chessBoard.getCellColor(p))) {
-	    			continue;
-	    		    }
-	    		}
-	    		
-	    		moves.add(new PossibleMove(p));
-	    	    }
-	    	}
+		final Position[] possiblePos = { new Position(row - 2, col - 1), 
+				new Position(row - 2, col + 1),
+				new Position(row - 1, col - 2), 
+				new Position(row - 1, col + 2), 
+				new Position(row + 2, col - 1),
+				new Position(row + 2, col + 1), 
+				new Position(row + 1, col - 2), 
+				new Position(row + 1, col + 2) };
+		
+		moves.clear();
+
+		for (var pos : possiblePos) {
+			if (chessBoard.checkPos(pos)) {
+				if (!chessBoard.isCellFree(pos)) {
+					if (color.equals(chessBoard.getCellColor(pos))) {
+						continue;
+					}
+				}
+
+				moves.add(new PossibleMove(pos));
+			}
+		}
 
 		return checkMoveList(toRow, toCol);
 	}

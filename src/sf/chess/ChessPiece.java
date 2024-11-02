@@ -7,7 +7,7 @@ public abstract class ChessPiece {
 	boolean check = true;
 
 	protected class PossibleMove {
-	        Position pos;
+	        Position pos = new Position();
 
 		public PossibleMove(int row, int col) {
 			pos.row = row;

@@ -1,7 +1,5 @@
 package sf.chess;
 
-import java.util.ArrayList;
-
 public class Pawn extends ChessPiece {
 
 	public Pawn(String color) {
@@ -10,43 +8,51 @@ public class Pawn extends ChessPiece {
 
 	@Override
 	public boolean canMoveToPosition(ChessBoard chessBoard, int row, int col, int toRow, int toCol) {
-
-		ArrayList<PossibleMove> moves = new ArrayList<>();
-		boolean freeCell = chessBoard.isCellFree(toRow, toCol);
-
+		moves.clear();
+		
+		// Проверяем цвет фигур, чтобы знать с какого конца считать
 		if (color.equals("White")) {
-			
-			if ((row + 1) > 7)
-				return false;
-			
-			if (freeCell) {
-				if (row == 1) {
-					moves.add(new PossibleMove(3, col));
-				}
-				moves.add(new PossibleMove(row+1, col));
-			} else {
-				if ((col + 1) <= 7)
-					moves.add(new PossibleMove(row+1, col+1));
-				
-				if ((col + 1) >= 0)
-				moves.add(new PossibleMove(row+1, col-1));
+			// Проверяем первый ход пешки и свободную клетку для этого, понятно что если у пешки первый ряд, то за пределы доски она выйти не может
+			if ((row == 1) && chessBoard.isCellFree(row + 2, col)) {
+				moves.add(new PossibleMove(row + 2, col));
+			} 
+			// Проверяем стандартный ход пешки
+			if (chessBoard.checkPos(row + 1, col) && chessBoard.isCellFree(row + 1, col)) {
+				moves.add(new PossibleMove(row + 1, col));
+			}
+			// Проверяем клетки для атаки, они обязательно должны быть заняты чёрными фигурами
+			if (chessBoard.checkPos(row + 1, col + 1)
+			&& !chessBoard.isCellFree(row + 1, col + 1)
+			&& chessBoard.getCellColor(row + 1, col + 1).equals("Black")) {
+				moves.add(new PossibleMove(row + 1, col + 1));
+			}
+			if (chessBoard.checkPos(row + 1, col - 1)
+			&& !chessBoard.isCellFree(row + 1, col - 1)
+			&& chessBoard.getCellColor(row + 1, col - 1).equals("Black")) {
+				moves.add(new PossibleMove(row + 1, col - 1));
 			}
 		} else {
+			// То же самое только для чёрных
+			if ((row == 6) && chessBoard.isCellFree(row - 2, col)) {
+				moves.add(new PossibleMove(row - 2, col));
+			}
 			
-			if ((row - 1) < 0 )
-				return false;
+			if (chessBoard.checkPos(row - 1, col) && chessBoard.isCellFree(row - 1, col)) {
+				moves.add(new PossibleMove(row - 1, col));
+			}
 			
-			if (freeCell) {
-				if (row == 6) {
-					moves.add(new PossibleMove(4, col));
-				}
-				moves.add(new PossibleMove(row-1, col));
-			} else {
-				moves.add(new PossibleMove(row-1, col+1));
-				moves.add(new PossibleMove(row-1, col-1));
+			if (chessBoard.checkPos(row - 1, col + 1)
+			&& !chessBoard.isCellFree(row - 1, col + 1)
+			&& chessBoard.getCellColor(row - 1, col + 1).equals("White")) {
+				moves.add(new PossibleMove(row - 1, col + 1));
+			}
+			if (chessBoard.checkPos(row - 1, col - 1)
+			&& !chessBoard.isCellFree(row - 1, col - 1)
+			&& chessBoard.getCellColor(row - 1, col - 1).equals("White")) {
+				moves.add(new PossibleMove(row - 1, col - 1));
 			}
 		}
-
+		
 		return checkMoveList(toRow, toCol);
 	}
 
