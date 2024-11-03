@@ -1,15 +1,17 @@
 package sf.chess;
 
-public class Rook extends ChessPiece{
+public class Queen extends ChessPiece{
 
-	public Rook(String color) {
+	public Queen(String color) {
 		super(color);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public boolean canMoveToPosition(ChessBoard chessBoard, int row, int col, int toRow, int toCol) {
 		moves.clear();
 		
+		seekDiagonalMoves(chessBoard, row, col);
 		seekVerticalHorizontalMoves(chessBoard, row, col);
 		
 		return checkMoveList(toRow, toCol);
@@ -17,7 +19,8 @@ public class Rook extends ChessPiece{
 
 	@Override
 	public String getSymbol() {
-		return "R";
+		return "Q";
 	}
+	
 
 }

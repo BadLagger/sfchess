@@ -26,6 +26,8 @@ public abstract class ChessBoard {
 		board[0][0] = new Rook("White");
 		board[0][7] = new Rook("White");
 		
+		board[0][4] = new Queen("White");
+		
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[1][i] = new Pawn("White");
 
@@ -38,6 +40,8 @@ public abstract class ChessBoard {
 		
 		board[7][0] = new Rook("Black");
 		board[7][7] = new Rook("Black");
+		
+		board[7][4] = new Queen("Black");
 		
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[6][i] = new Pawn("Black");
