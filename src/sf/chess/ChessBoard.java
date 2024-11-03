@@ -17,19 +17,31 @@ public abstract class ChessBoard {
 
 	public ChessBoard(String nowPlayer) {
 		this.nowPlayer = nowPlayer;
-		board[0][2] = new Horse("White");
-		board[0][5] = new Horse("White");
+		board[0][1] = new Horse("White");
+		board[0][6] = new Horse("White");
+		
+		board[0][2] = new Bishop("White");
+		board[0][5] = new Bishop("White");
+		
+		board[0][0] = new Rook("White");
+		board[0][7] = new Rook("White");
+		
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[1][i] = new Pawn("White");
-		board[0][1] = new Bishop("White");
-		board[0][6] = new Bishop("White");
+
 		
-		board[7][2] = new Horse("Black");
-		board[7][5] = new Horse("Black");
+		board[7][1] = new Horse("Black");
+		board[7][6] = new Horse("Black");
+		
+		board[7][2] = new Bishop("Black");
+		board[7][5] = new Bishop("Black");
+		
+		board[7][0] = new Rook("Black");
+		board[7][7] = new Rook("Black");
+		
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[6][i] = new Pawn("Black");
-		board[7][1] = new Bishop("Black");
-		board[7][6] = new Bishop("Black");
+		
 	}
 
 	public String nowPlayerColor() {

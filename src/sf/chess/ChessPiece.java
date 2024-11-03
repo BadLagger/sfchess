@@ -137,5 +137,68 @@ public abstract class ChessPiece {
 	
 	protected void seekVerticalHorizontalMoves(ChessBoard chessBoard, int row, int col) {
 		
+		int count = 1;
+		
+		while((col + count) <= ChessBoard.MAX_COL_INDEX) {
+			if (chessBoard.checkPos(row, col + count)) {
+				if (chessBoard.isCellFree(row, col + count)) {
+					moves.add(new PossibleMove(row, col + count));
+				} else {
+					if (!chessBoard.getCellColor(row, col + count).equals(getColor()))
+						moves.add(new PossibleMove(row, col + count));
+					break;
+				}
+			} else
+				break;
+			count++;
+		}
+		
+		count = 1;
+		
+		while((col - count) >= ChessBoard.MIN_COL_INDEX) {
+			if (chessBoard.checkPos(row, col - count)) {
+				if (chessBoard.isCellFree(row, col - count)) {
+					moves.add(new PossibleMove(row, col - count));
+				} else {
+					if (!chessBoard.getCellColor(row, col - count).equals(getColor()))
+						moves.add(new PossibleMove(row, col - count));
+					break;
+				}
+			} else
+				break;
+			count++;
+		}
+		
+		count = 1;
+		
+		while((row + count) <= ChessBoard.MAX_ROW_INDEX) {
+			if (chessBoard.checkPos(row + count, col)) {
+				if (chessBoard.isCellFree(row + count, col)) {
+					moves.add(new PossibleMove(row + count, col));
+				} else {
+					if (!chessBoard.getCellColor(row + count, col).equals(getColor()))
+						moves.add(new PossibleMove(row + count, col));
+					break;
+				}
+			} else
+				break;
+			count++;
+		}
+		
+		count = 1;
+		
+		while((row - count) >= ChessBoard.MIN_ROW_INDEX) {
+			if (chessBoard.checkPos(row - count, col)) {
+				if (chessBoard.isCellFree(row - count, col)) {
+					moves.add(new PossibleMove(row - count, col));
+				} else {
+					if (!chessBoard.getCellColor(row - count, col).equals(getColor()))
+						moves.add(new PossibleMove(row - count, col));
+					break;
+				}
+			} else
+				break;
+			count++;
+		}
 	}
 }
