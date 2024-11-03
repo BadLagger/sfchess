@@ -134,4 +134,8 @@ public abstract class ChessPiece {
 			count++;
 		}
 	}
+	
+	protected void seekVerticalHorizontalMoves(ChessBoard chessBoard, int row, int col) {
+		
+	}
 }
