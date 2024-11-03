@@ -7,7 +7,7 @@ public abstract class ChessPiece {
 	boolean check = true;
 
 	protected class PossibleMove {
-	        Position pos = new Position();
+	    Position pos = new Position();
 
 		public PossibleMove(int row, int col) {
 			pos.row = row;
@@ -16,6 +16,11 @@ public abstract class ChessPiece {
 		
 		public PossibleMove(Position p) {
 		    pos = p;
+		}
+		
+		
+		public Position getPos() {
+			return pos;
 		}
 
 		public boolean equal(int row, int col) {
@@ -42,11 +47,91 @@ public abstract class ChessPiece {
 
 	public abstract String getSymbol();
 	
+	public void dbgPrintMoves() {
+		for (var move : moves) {
+			System.out.format("ROW: %d COL: %d\n", move.getPos().row, move.getPos().col);
+		}
+	}
+	
 	protected boolean checkMoveList(int destRow, int destCol) {
 		for (var move : moves) {
 			if (move.equal(destRow, destCol))
 				return true;
 		}
 		return false;
+	}
+	
+	protected void seekDiagonalMoves(ChessBoard chessBoard, int row, int col) {
+		int count = 1;
+		boolean colMaxFlag = false;
+		boolean colMinFlag = false;
+		
+		while ((row + count) <= ChessBoard.MAX_ROW_INDEX) {
+			boolean colMaxResult = (!colMaxFlag) ? chessBoard.checkPos(row + count, col + count) : false;
+			boolean colMinResult = (!colMinFlag) ? chessBoard.checkPos(row + count, col - count) : false;
+			
+			if (colMaxResult) {
+				if (chessBoard.isCellFree(row + count, col + count)) {
+					moves.add(new PossibleMove(row + count, col + count));
+				} else {
+					if (!chessBoard.getCellColor(row + count, col + count).equals(getColor()))
+						moves.add(new PossibleMove(row + count, col + count));
+					colMaxFlag = true;
+				}
+			} else
+				colMaxFlag = true;
+			
+			if (colMinResult) {
+				if (chessBoard.isCellFree(row + count, col - count)) {
+					moves.add(new PossibleMove(row + count, col - count));
+				} else {
+					if (!chessBoard.getCellColor(row + count, col - count).equals(getColor()))
+						moves.add(new PossibleMove(row + count, col - count));
+					colMinFlag = true;
+				}
+			} else
+				colMinFlag = true;
+			
+			if (colMaxFlag & colMinFlag)
+				break;
+			
+			count++;
+		}
+		
+		count = 1;
+		colMaxFlag = false;
+		colMinFlag = false;
+		
+		while ((row - count) >= ChessBoard.MIN_ROW_INDEX) {
+			boolean colMaxResult = (!colMaxFlag) ? chessBoard.checkPos(row - count, col + count) : false;
+			boolean colMinResult = (!colMinFlag) ? chessBoard.checkPos(row - count, col - count) : false;
+			
+			if (colMaxResult) {
+				if (chessBoard.isCellFree(row - count, col + count)) {
+					moves.add(new PossibleMove(row - count, col + count));
+				} else {
+					if (!chessBoard.getCellColor(row - count, col + count).equals(getColor()))
+						moves.add(new PossibleMove(row - count, col + count));
+					colMaxFlag = true;
+				}
+			} else
+				colMaxFlag = true;
+			
+			if (colMinResult) {
+				if (chessBoard.isCellFree(row - count, col - count)) {
+					moves.add(new PossibleMove(row - count, col - count));
+				} else {
+					if (!chessBoard.getCellColor(row - count, col - count).equals(getColor()))
+						moves.add(new PossibleMove(row - count, col - count));
+					colMinFlag = true;
+				}
+			} else
+				colMinFlag = true;
+			
+			if (colMaxFlag & colMinFlag)
+				break;
+			
+			count++;
+		}
 	}
 }
