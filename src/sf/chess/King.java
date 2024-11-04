@@ -28,10 +28,12 @@ public class King extends ChessPiece{
 				}
 				
 				//!TODO: Проверка ячейки под атакой
-				//!TODO: Ракировка
-				moves.add(new PossibleMove(pos));
+				if (!isUnderAtack(chessBoard, pos.row, pos.col, getColor()))
+					moves.add(new PossibleMove(pos));
 			}
 		}
+		
+		//!TODO: Ракировка
 		
 		return checkMoveList(toRow, toCol);
 	}
@@ -40,5 +42,4 @@ public class King extends ChessPiece{
 	public String getSymbol() {
 		return "K";
 	}
-
 }

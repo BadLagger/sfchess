@@ -14,40 +14,41 @@ public abstract class ChessBoard {
 	String nowPlayer;
 	String whitePlayerName = "Player 1";
 	String blackPlayerName = "Player 1";
+	Position whiteKing = new Position(0, 3);
+	Position blackKing = new Position(7, 3);
 
 	public ChessBoard(String nowPlayer) {
 		this.nowPlayer = nowPlayer;
 		board[0][1] = new Horse("White");
 		board[0][6] = new Horse("White");
-		
+
 		board[0][2] = new Bishop("White");
 		board[0][5] = new Bishop("White");
-		
+
 		board[0][0] = new Rook("White");
 		board[0][7] = new Rook("White");
-		
+
 		board[0][4] = new Queen("White");
 		board[0][3] = new King("White");
-		
+
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[1][i] = new Pawn("White");
 
-		
 		board[7][1] = new Horse("Black");
 		board[7][6] = new Horse("Black");
-		
+
 		board[7][2] = new Bishop("Black");
 		board[7][5] = new Bishop("Black");
-		
+
 		board[7][0] = new Rook("Black");
 		board[7][7] = new Rook("Black");
-		
+
 		board[7][4] = new Queen("Black");
 		board[7][3] = new King("Black");
-		
+
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[6][i] = new Pawn("Black");
-		
+
 	}
 
 	public String nowPlayerColor() {
@@ -87,8 +88,32 @@ public abstract class ChessBoard {
 				return false;
 
 			if (board[bgnRow][bgnCol].canMoveToPosition(this, bgnRow, bgnCol, endRow, endCol)) {
-			    	board[endRow][endCol] = board[bgnRow][bgnCol];
-			    	board[bgnRow][bgnCol] = null;
+				ChessPiece tmpPiece = board[endRow][endCol];
+				board[endRow][endCol] = board[bgnRow][bgnCol];
+				board[bgnRow][bgnCol] = null;
+				
+				// Если фигура была Королём, то меняем значение переменной позиции короля
+				if (board[endRow][endCol].getSymbol().equals("K")) {
+					if (board[endRow][endCol].getColor().equals("White")) {
+						whiteKing.row = endRow;
+						whiteKing.col = endCol;
+					} else {
+						blackKing.row = endRow;
+						blackKing.col = endCol;
+					}
+				} else {
+				// Проверка на Короля под ударом. Если в результате хода собственный король оказывается под ударом, то ходить нельзя
+					int row = (board[endRow][endCol].getColor().equals("White")) ? whiteKing.row : blackKing.row;
+					int col = (board[endRow][endCol].getColor().equals("White")) ? whiteKing.col : blackKing.col;
+					
+					if (board[row][col].isUnderAtack(this, row, col, board[endRow][endCol].getColor())) {
+						board[bgnRow][bgnCol] = board[endRow][endCol];
+						board[endRow][endCol] = tmpPiece;
+						return false;
+					}
+				}
+				
+				board[endRow][endCol].setAnyMove();
 				nowPlayer = nowPlayer.equals("White") ? "Black" : "White";
 				return true;
 			}
@@ -99,29 +124,39 @@ public abstract class ChessBoard {
 	public boolean checkPos(int row, int col) {
 		return (row >= MIN_ROW_INDEX && row <= MAX_ROW_INDEX && col >= MIN_COL_INDEX && col <= MAX_COL_INDEX);
 	}
-	
+
 	public boolean checkPos(Position p) {
 		return checkPos(p.row, p.col);
 	}
 
-
 	public abstract void printBoard();
-	
+
 	public abstract boolean inputToBoard();
 
 	public boolean isCellFree(int row, int col) {
 		return (board[row][col] == null);
 	}
-	
+
 	public boolean isCellFree(Position p) {
-	    return isCellFree(p.row, p.col);
+		return isCellFree(p.row, p.col);
 	}
-	
+
 	public String getCellColor(Position p) {
-	    return board[p.row][p.col].color;
+		return board[p.row][p.col].color;
+	}
+
+	public String getCellColor(int row, int col) {
+		return getCellColor(new Position(row, col));
 	}
 	
-	public String getCellColor(int row, int col) {
-	    return getCellColor(new Position(row, col));
+	public String getPieceName(int row, int col) {
+		if (!isCellFree(row, col)) {
+			return board[row][col].getSymbol();
+		}
+		return null;
+	}
+	
+	public String getPieceName(Position p) {
+		return getPieceName(p.row, p.col);
 	}
 }
