@@ -14,11 +14,16 @@ public abstract class ChessBoard {
 	String nowPlayer;
 	String whitePlayerName = "Player 1";
 	String blackPlayerName = "Player 1";
-	Position whiteKing = new Position(0, 3);
-	Position blackKing = new Position(7, 3);
+	Position whiteKing = new Position(0, 0);
+	Position blackKing = new Position(0, 0);
 
 	public ChessBoard(String nowPlayer) {
 		this.nowPlayer = nowPlayer;
+		setInitialState();
+	}
+	
+	private void setInitialState() {
+		cleanDesc();
 		board[0][1] = new Horse("White");
 		board[0][6] = new Horse("White");
 
@@ -28,8 +33,8 @@ public abstract class ChessBoard {
 		board[0][0] = new Rook("White");
 		board[0][7] = new Rook("White");
 
-		board[0][4] = new Queen("White");
-		board[0][3] = new King("White");
+		board[0][4] = new King("White");
+		board[0][3] = new Queen("White");
 
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[1][i] = new Pawn("White");
@@ -43,12 +48,144 @@ public abstract class ChessBoard {
 		board[7][0] = new Rook("Black");
 		board[7][7] = new Rook("Black");
 
-		board[7][4] = new Queen("Black");
-		board[7][3] = new King("Black");
+		board[7][4] = new King("Black");
+		board[7][3] = new Queen("Black");
 
 		for (int i = 0; i <= MAX_INDEX; ++i)
 			board[6][i] = new Pawn("Black");
-
+		
+		whiteKing.row = 0;
+		whiteKing.col = 4;
+		
+		blackKing.row = 7;
+		blackKing.col = 4;
+	}
+	
+	private void cleanDesc() {
+		for(int i = MIN_ROW_INDEX; i <= MAX_ROW_INDEX; ++i) {
+			for (int j = MIN_COL_INDEX; j <= MAX_COL_INDEX; ++j) {
+				board[i][j] = null;
+			}
+		}
+	}
+	
+	public String getDescState() {
+		String ret = "";
+		for(int i = MIN_ROW_INDEX; i <= MAX_ROW_INDEX; ++i) {
+			for (int j = MIN_COL_INDEX; j <= MAX_COL_INDEX; ++j) {
+				if(board[i][j] != null) {
+					ret += String.format("%s %s %d %d\n", board[i][j].getSymbol(), board[i][j].getColor(), i, j);
+				}
+			}
+		}
+		ret += String.format("ActivePlayer %s\n", nowPlayer);
+		return  ret;
+	}
+	
+	public boolean setDescState(String state) {
+		ChessPiece[][] backupBoard = new ChessPiece[MAX_ROW_INDEX + 1][MAX_COL_INDEX + 1];
+		String backupActivePlayer = new String(nowPlayer);
+		Position backupWhiteKing = new Position(whiteKing);
+		Position backupBlackKing = new Position(blackKing);
+		boolean error = false;
+		boolean activePlayerField = false;
+		
+		// Создание текущей копии доски
+		for(int i = MIN_ROW_INDEX; i <= MAX_ROW_INDEX; ++i) {
+			for (int j = MIN_COL_INDEX; j <= MAX_COL_INDEX; ++j) { 
+				backupBoard[i][j] = board[i][j];
+			} 
+		}
+		
+		// Очистка доски
+		cleanDesc();
+		
+		// Разбор входящего состояния
+		for (String line : state.split("\n")) {
+			String[] fgState = line.split(" ");
+			
+			// Положения фигур хранятся в 4-х полях, а активный игрок - в 2-х
+			if ((fgState.length != 4) && (fgState.length != 2)) {
+				error = true;
+				break;
+			}
+			
+			// Поле активного игрока
+			if (fgState.length == 2) {
+				if (fgState[0].equals("ActivePlayer") 
+				&& ((fgState[1].equals("White")) || (fgState[1].equals("Black")))) {
+					nowPlayer = fgState[1];
+					activePlayerField = true;
+					continue;
+				}
+				error = true;
+				break;
+			}
+			
+			int row = Integer.parseInt(fgState[2]);
+			int col = Integer.parseInt(fgState[3]);
+			
+			if (!checkPos(row, col)) {
+				error = true;
+				break;
+			}
+			
+			String color = fgState[1];
+			
+			if (!color.equals("White") && !color.equals("Black")) {
+				error = true;
+				break;
+			}
+			
+			switch(fgState[0]) {
+			case "P":
+				board[row][col] = new Pawn(color);
+				break;
+			case "R":
+				board[row][col] = new Rook(color);
+				break;
+			case "H":
+				board[row][col] = new Horse(color);
+				break;
+			case "B":
+				board[row][col] = new Bishop(color);
+				break;
+			case "Q":
+				board[row][col] = new Queen(color);
+				break;
+			case "K":
+				board[row][col] = new King(color);
+				if (color.equals("White")) {
+					whiteKing.set(row, col);
+				} else {
+					blackKing.set(row, col);
+				}
+				break;
+			default: error = true;
+			}
+			
+			if (error)
+				break;
+		}
+		
+		// Если в состоянии нету признака активного игрока, то ошибка состояния 
+		if (!activePlayerField)
+			error = true;
+		
+		// Если переданное состояние доски с ошибкой то необходимо восстановить предыдущее состояние доски
+		if (error) {
+			for(int i = MIN_ROW_INDEX; i <= MAX_ROW_INDEX; ++i) {
+				for (int j = MIN_COL_INDEX; j <= MAX_COL_INDEX; ++j) { 
+					board[i][j] = backupBoard[i][j];
+				} 
+			}
+			nowPlayer = backupActivePlayer;
+			whiteKing.set(backupWhiteKing);
+			blackKing.set(backupBlackKing);
+			return false;
+		}
+		
+		return true;
 	}
 
 	public String nowPlayerColor() {
@@ -79,6 +216,16 @@ public abstract class ChessBoard {
 		}
 
 		return "";
+	}
+	
+	
+	public boolean isCheck(String color) {
+		if (color.equals("White")) {
+			return board[whiteKing.row][whiteKing.col].isUnderAtack(this, whiteKing.row, whiteKing.col, color);
+		} else if (color.equals("Black")) {
+			return board[blackKing.row][blackKing.col].isUnderAtack(this, blackKing.row, blackKing.col, color);
+		}
+		return false;
 	}
 
 	public boolean moveToPosition(int bgnRow, int bgnCol, int endRow, int endCol) {

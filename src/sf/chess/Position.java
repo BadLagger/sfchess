@@ -5,12 +5,23 @@ public class Position {
     public int col;
     
     public Position() {
-	row = -1;
-	col = -1;
+    	set(-1, -1);
     }
     
     public Position(int row, int col) {
-	this.row = row;
-	this.col = col;
+    	set(row, col);
+    }
+    
+    public Position(Position p) {
+    	set(p);
+    }
+    
+    public void set(int row, int col) {
+    	this.row = row;
+    	this.col = col;
+    }
+    
+    public void set(Position p) {
+    	set(p.row, p.col);
     }
 }
