@@ -76,6 +76,7 @@ public class ConsoleChessBoard extends ChessBoard {
 			} catch (IOException exp) {
 				System.out.format("Save ERROR: %s!!!\n", exp.getMessage());
 			}
+			skipBoardPrint = true;
 			return true;
 		}
 		
@@ -90,6 +91,7 @@ public class ConsoleChessBoard extends ChessBoard {
 			} catch (IOException exp) {
 				System.out.format("Load ERROR: %s!!!\n", exp.getMessage());
 			}
+			skipBoardPrint = false;
 			return true;
 		}
 		

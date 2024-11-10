@@ -292,7 +292,7 @@ public abstract class ChessPiece {
 						return true;
 					}
 					
-					colMinResult = true;
+					colMinFlag = true;
 				}
 			} else
 				colMinResult = true;
@@ -331,7 +331,7 @@ public abstract class ChessPiece {
 						return true;
 					}
 					
-					colMinResult = true;
+					colMinFlag = true;
 				}
 			} else
 				colMinResult = true;

@@ -9,13 +9,15 @@ public abstract class ChessBoard {
 
 	final static int MIN_COL_INDEX = MIN_INDEX;
 	final static int MAX_COL_INDEX = MAX_INDEX;
-
+	
+	
 	public ChessPiece[][] board = new ChessPiece[MAX_ROW_INDEX + 1][MAX_COL_INDEX + 1];
 	String nowPlayer;
 	String whitePlayerName = "Player 1";
 	String blackPlayerName = "Player 1";
 	Position whiteKing = new Position(0, 0);
 	Position blackKing = new Position(0, 0);
+	public boolean roque = false;
 
 	public ChessBoard(String nowPlayer) {
 		this.nowPlayer = nowPlayer;
@@ -242,11 +244,21 @@ public abstract class ChessBoard {
 				// Если фигура была Королём, то меняем значение переменной позиции короля
 				if (board[endRow][endCol].getSymbol().equals("K")) {
 					if (board[endRow][endCol].getColor().equals("White")) {
-						whiteKing.row = endRow;
-						whiteKing.col = endCol;
+						whiteKing.set(endRow, endCol);
 					} else {
-						blackKing.row = endRow;
-						blackKing.col = endCol;
+						blackKing.set(endRow, endCol);
+					}
+					// Проверка на рокировку
+					if (roque) {
+						// Перемещение ладьи при рокировке
+						if (endCol == 6) {
+							board[endRow][5] = board[endRow][7];
+							board[endRow][7] = null;
+						} else {
+							board[endRow][3] = board[endRow][0];
+							board[endRow][0] = null;
+						}
+						roque = false;
 					}
 				} else {
 				// Проверка на Короля под ударом. Если в результате хода собственный король оказывается под ударом, то ходить нельзя
@@ -305,5 +317,9 @@ public abstract class ChessBoard {
 	
 	public String getPieceName(Position p) {
 		return getPieceName(p.row, p.col);
+	}
+
+	public boolean getPieceAnyMove(int row, int col) {
+		return board[row][col].getAnyMove();
 	}
 }
